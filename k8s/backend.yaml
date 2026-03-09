@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: dotnet-api
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: dotnet-api
+  template:
+    metadata:
+      labels:
+        app: dotnet-api
+    spec:
+      containers:
+      - name: dotnet-api
+        image: my-app/backend:v1
+        imagePullPolicy: Never # Forces K8s to use your local build
+        ports:
+        - containerPort: 8080
+        env:
+        - name: ConnectionStrings__DefaultConnection
+          value: "Server=sql-service;Database=master;User Id=sa;Password=YourStrongPassword123!;"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: backend-service
+spec:
+  selector:
+    app: dotnet-api
+  ports:
+    - protocol: TCP
+      port: 8080
+      targetPort: 8080

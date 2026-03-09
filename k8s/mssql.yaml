@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sql-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: sql-service
+  template:
+    metadata:
+      labels:
+        app: sql-service
+    spec:
+      containers:
+      - name: mssql-service
+        image: mcr.microsoft.com/mssql/server:2022-latest
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 1433
+        env:
+        - name: ACCEPT_EULA
+          value: "Y"
+        - name: MSSQL_SA_PASSWORD
+          value: "YourStrongPassword123!"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: sql-service
+spec:
+  selector:
+    app: sql-service
+  ports:
+    - protocol: TCP
+      port: 1433
+      targetPort: 1433
