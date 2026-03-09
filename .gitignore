@@ -4,3 +4,7 @@ obj/
 *.user
 .DS_Store
 .env
+# Sensitive Security Files
+k8s/*.key
+k8s/*.crt
+.env
